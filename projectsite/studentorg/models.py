@@ -7,28 +7,29 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-
-
+    
 class College(BaseModel):
     college_name = models.CharField(max_length=150)
 
     def __str__(self):
         return self.college_name
 
-
-class Program(models.Model):
+class Program(BaseModel):
     prog_name = models.CharField(max_length=150)
     college = models.ForeignKey(College, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.prog_name
-
-
+    
 class Organization(BaseModel):
-    org_name = models.CharField(max_length=255)
-    vision = models.CharField(max_length=500)
+    name = models.CharField(max_length=250)
+    college = models.ForeignKey(
+        College, null=True, blank=True, on_delete=models.CASCADE)
+    description = models.CharField(max_length=500)
 
-
+    def __str__(self):
+        return self.name
+    
 class Student(BaseModel):
     student_id = models.CharField(max_length=15)
     lastname = models.CharField(max_length=25)
@@ -38,10 +39,7 @@ class Student(BaseModel):
 
     def __str__(self):
         return f"{self.lastname}, {self.firstname}"
-
-    org = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    birthdate = models.DateField()
-
+    
 class OrgMember(BaseModel):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
